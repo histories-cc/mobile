@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatelessWidget {
@@ -12,6 +13,15 @@ class MapPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: FlutterMap(
+        children: [
+          TileLayerWidget(
+            options: TileLayerOptions(
+              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              subdomains: ['a', 'b', 'c'],
+            ),
+          ),
+          LocationMarkerLayerWidget(),
+        ],
         options: MapOptions(
           center: LatLng(51.5, -0.09),
           zoom: 13.0,
@@ -23,10 +33,6 @@ class MapPage extends StatelessWidget {
               InteractiveFlag.pinchZoom,
         ),
         layers: [
-          TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-          ),
           MarkerLayerOptions(
             markers: [
               Marker(

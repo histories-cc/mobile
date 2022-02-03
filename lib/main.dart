@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -47,11 +49,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late MapController _mapController;
+  late StreamSubscription _subscription;
   late List<Widget> _tabs;
 
   @override
   void initState() {
     _mapController = MapController();
+
+    _mapController.onReady.then((_) {
+      _subscription = _mapController.mapEventStream.listen((MapEvent mapEvent) {
+        if (mapEvent is MapEventMoveStart) {
+          print(DateTime.now().toString() + ' [MapEventMoveStart] START');
+          // do something
+        }
+        if (mapEvent is MapEventMoveEnd) {
+          print(DateTime.now().toString() + ' [MapEventMoveStart] END');
+          // do something
+        }
+      });
+    });
+
     _tabs = [
       MapPage(
         mapController: _mapController,
