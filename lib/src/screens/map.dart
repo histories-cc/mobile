@@ -1,37 +1,69 @@
-import 'package:ferry_flutter/ferry_flutter.dart';
-import 'package:flutter/cupertino.dart';
-import "../graphql/client.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class Map extends StatelessWidget {
-  Map({super.key});
-  final client = initClient(
-      "https://4000-historiescc-backend-okexg6e89af.ws-eu64.gitpod.io/");
-  final helloReq = GHelloReq();
+  static const String route = '/';
+
+  const Map({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text("Map"),
-      ),
-      child: Center(
-        child: Operation(
-          client: client,
-          operationRequest: helloReq,
-          builder: (context, response, error) {
-            if (response == null ||
-                error != null ||
-                response.data == null ||
-                response.loading) {
-              return const Text("Loading...");
-            }
-
-            if (response.data?.hello == null) {
-              return const Text("No data");
-            }
-            return Text(response.data?.hello ?? "___");
-          },
+    final markers = <Marker>[
+      Marker(
+        width: 80,
+        height: 80,
+        point: LatLng(51.5, -0.09),
+        builder: (ctx) => const FlutterLogo(
+          textColor: Colors.blue,
+          key: ObjectKey(Colors.blue),
         ),
+      ),
+      Marker(
+        width: 80,
+        height: 80,
+        point: LatLng(53.3498, -6.2603),
+        builder: (ctx) => const FlutterLogo(
+          textColor: Colors.green,
+          key: ObjectKey(Colors.green),
+        ),
+      ),
+      Marker(
+        width: 80,
+        height: 80,
+        point: LatLng(48.8566, 2.3522),
+        builder: (ctx) => const FlutterLogo(
+          textColor: Colors.purple,
+          key: ObjectKey(Colors.purple),
+        ),
+      ),
+    ];
+
+    return Scaffold(
+      body: Column(
+        children: [
+          Flexible(
+            child: FlutterMap(
+              options: MapOptions(
+                center: LatLng(51.5, -0.09),
+                zoom: 5,
+              ),
+              nonRotatedChildren: [
+                AttributionWidget.defaultWidget(
+                  source: 'OpenStreetMap contributors',
+                  onSourceTapped: () {},
+                ),
+              ],
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                ),
+                MarkerLayer(markers: markers),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
