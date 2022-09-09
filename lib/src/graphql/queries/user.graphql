@@ -1,0 +1,23 @@
+query Me {
+  me {
+    id
+    username
+    firstName
+    lastName
+    email
+    verified
+    isAdmin
+  }
+}
+
+query User($username: String!) {
+  user(input: { username: $username }) {
+    id
+    createdAt
+    firstName
+    lastName
+    username
+    verified
+    isAdmin
+  }
+}
